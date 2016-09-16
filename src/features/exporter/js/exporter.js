@@ -112,8 +112,8 @@
                  * @param {string} colTypes which columns to export, valid values are
                  * uiGridExporterConstants.ALL, uiGridExporterConstants.VISIBLE
                  */
-                csvExport: function (rowTypes, colTypes) {
-                  service.csvExport(grid, rowTypes, colTypes);
+                csvExport: function (rowTypes, colTypes, applyCellFilters) {
+                  service.csvExport(grid, rowTypes, colTypes, applyCellFilters);
                 },
                 /**
                  * @ngdoc function
@@ -130,8 +130,8 @@
                  * @param {string} colTypes which columns to export, valid values are
                  * uiGridExporterConstants.ALL, uiGridExporterConstants.VISIBLE
                  */
-                pdfExport: function (rowTypes, colTypes) {
-                  service.pdfExport(grid, rowTypes, colTypes);
+                pdfExport: function (rowTypes, colTypes, applyCellFilters) {
+                  service.pdfExport(grid, rowTypes, colTypes, applyCellFilters);
                 }
               }
             }
@@ -619,11 +619,11 @@
          * uiGridExporterConstants.ALL, uiGridExporterConstants.VISIBLE,
          * uiGridExporterConstants.SELECTED
          */
-        csvExport: function (grid, rowTypes, colTypes) {
+        csvExport: function (grid, rowTypes, colTypes, applyCellFilters) {
           var self = this;
           this.loadAllDataIfNeeded(grid, rowTypes, colTypes).then(function() {
             var exportColumnHeaders = grid.options.showHeader ? self.getColumnHeaders(grid, colTypes) : [];
-            var exportData = self.getData(grid, rowTypes, colTypes);
+            var exportData = self.getData(grid, rowTypes, colTypes, applyCellFilters);
             var csvContent = self.formatAsCsv(exportColumnHeaders, exportData, grid.options.exporterCsvColumnSeparator);
 
             self.downloadFile (grid.options.exporterCsvFilename, csvContent, grid.options.exporterCsvColumnSeparator, grid.options.exporterOlderExcelCompatibility);
@@ -988,11 +988,11 @@
          * uiGridExporterConstants.ALL, uiGridExporterConstants.VISIBLE,
          * uiGridExporterConstants.SELECTED
          */
-        pdfExport: function (grid, rowTypes, colTypes) {
+        pdfExport: function (grid, rowTypes, colTypes, applyCellFilters) {
           var self = this;
           this.loadAllDataIfNeeded(grid, rowTypes, colTypes).then(function () {
             var exportColumnHeaders = self.getColumnHeaders(grid, colTypes);
-            var exportData = self.getData(grid, rowTypes, colTypes);
+            var exportData = self.getData(grid, rowTypes, colTypes, applyCellFilters);
             var docDefinition = self.prepareAsPdf(grid, exportColumnHeaders, exportData);
 
             if (self.isIE() || navigator.appVersion.indexOf("Edge") !== -1) {
